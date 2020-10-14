@@ -1,17 +1,21 @@
 <template>
-  <contest-list></contest-list>
+  <playground></playground>
 </template>
 
 <script>
-import ContestList from './components/ContestList.vue'
+import Playground from './components/Playground.vue'
 
 export default {
   name: 'App',
   components: {
-    ContestList
+    Playground
   }
 }
 </script>
 
 <style>
+html, body, #app{
+  width: 100%;
+  height: 100%;
+}
 </style>
