@@ -1,5 +1,5 @@
 <template>
-  <img src="@/assets/vertex.png" :style="{left: x+'px', top: y+'px'}">
+<circle :cx="x" :cy="y" r="25" stroke="black" stroke-width="3" fill="red" />
 </template>
 <script>
 export default {
@@ -17,9 +17,4 @@ export default {
 </script>
 
 <style scoped>
-img {
-  width: 50px;
-  height: 50px;
-  position: absolute;
-}
 </style>

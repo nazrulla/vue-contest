@@ -1,5 +1,5 @@
 <template>
-  <div
+  <svg
     id="playground"
     @click.prevent="addVertex($event)"
     @mousedown.prevent="start($event)"
@@ -12,16 +12,25 @@
       :key="vertex.id"
       :id="vertex.id"
     ></vertex>
-  </div>
+    <edge
+      :x1="edge.x1"
+      :y1="edge.y1"
+      :x2="edge.x2"
+      :y2="edge.y2"
+      v-for="edge in edges"
+      :key="edge.id"
+    ></edge>
+  </svg>
 </template>
 
 <script>
 import Vertex from "./Vertex.vue";
-
+import Edge from "./Edge.vue";
 export default {
   name: "Playground",
   components: {
     Vertex,
+    Edge
   },
   data() {
     return {
@@ -29,43 +38,69 @@ export default {
       endId: null,
       count: 0,
       vertices: [],
+      edges: [],
+      points: [],
     };
   },
   methods: {
     start($event) {
-      if ($event.target.tagName == "IMG") this.startId = $event.target.id;
-      else this.startId = null;
+      this.startId = this.points[$event.y * this.$window.innerWidth + $event.x];
     },
     end($event) {
-      if(this.startId == null) return;
-      if($event.target.tagName == "IMG"){
-        this.endId = $event.target.id
-        this.connect()
-      }
+      if (this.startId === undefined) return;
+      this.endId = this.points[$event.y * this.$window.innerWidth + $event.x];
+      if (this.endId !== undefined) this.connect();
     },
-    connect(){
-      console.log(this.startId + " " + this.endId + " are connected now")
+    connect() {
+      if (this.vertices[this.startId]["neighbors"][this.endId]) return;
+      this.vertices[this.startId]["neighbors"][this.endId] = true;
+      this.drawLine(this.startId, this.endId);
+    },
+    drawLine(start, end) {
+      this.edges.push({
+        x1: this.vertices[start].x,
+        y1: this.vertices[start].y,
+        x2: this.vertices[end].x,
+        y2: this.vertices[end].y
+      })
+      return;
     },
     addVertex($event) {
+      var [x, y] = this.findCoordinates($event);
+      if (x == -1) return;
       this.vertices.push({
         id: this.count++,
-        x: this.findX($event),
-        y: this.findY($event),
+        x: x,
+        y: y,
+        neighbors: {},
       });
+      var width = this.$window.innerWidth;
+      //filling up points with vertex index
+      var half = this.$circle/2
+      for (var i = -half; i < half; i++) {
+        for (var j = -half; j < half; j++) {
+          this.points[(y + i) * width + x + j] = this.count - 1;
+        }
+      }
     },
-    findX($event) {
-      let x = Math.min(
-        Math.max($event.x - this.$circle / 2, 0),
-        this.$window.innerWidth - this.$circle
-      );
-      return x;
-    },
-    findY($event) {
+    findCoordinates($event) {
       let y = Math.min(
-        Math.max($event.y - this.$circle / 2, 0),
-        this.$window.innerHeight - this.$circle
+        Math.max($event.y, this.$circle / 2),
+        this.$window.innerHeight - this.$circle / 2
       );
-      return y;
+      let x = Math.min(
+        Math.max($event.x, this.$circle / 2),
+        this.$window.innerWidth - this.$circle / 2
+      );
+      var width = this.$window.innerWidth;
+      for (var i = 0; i < this.$circle; i++) {
+        for (var j = 0; j < this.$circle; j++) {
+          if (typeof this.points[(y + i) * width + x + j] !== "undefined") {
+            return [-1, -1];
+          }
+        }
+      }
+      return [x, y];
     },
   },
 };
