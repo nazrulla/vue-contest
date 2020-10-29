@@ -1,8 +1,20 @@
 <template>
-  <div id="vertex" :style="style"></div>
+  <edge
+    :x1="edge.x1"
+    :y1="edge.y1"
+    :x2="edge.x2"
+    :y2="edge.y2"
+    v-for="edge in vertex['neighbors']"
+    :key="edge.id"
+  ></edge>
+  <div class="vertex" :style="style"></div>
 </template>
 <script>
+import Edge from "./Edge.vue";
 export default {
+  components: {
+    Edge,
+  },
   name: "Vertex",
   data() {
     return {};
@@ -10,6 +22,7 @@ export default {
   props: {
     x: Number,
     y: Number,
+    vertex: Object
   },
   computed: {
     style() {
@@ -31,8 +44,9 @@ export default {
 </script>
 
 <style scoped>
-#vertex {
+.vertex {
   position: absolute;
+  z-index: 3;
   background: red;
   border-radius: 100%;
 }

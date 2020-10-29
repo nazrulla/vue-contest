@@ -21,31 +21,23 @@
         ></path>
       </symbol>
     </svg>
-    <edge
-      :x1="edge.x1"
-      :y1="edge.y1"
-      :x2="edge.x2"
-      :y2="edge.y2"
-      v-for="edge in edges"
-      :key="edge.id"
-    ></edge>
     <vertex
       :x="vertex.x"
       :y="vertex.y"
+      :vertex="vertex"
       v-for="vertex in vertices"
       :key="vertex.id"
+      :id="vertex.id"
     ></vertex>
   </div>
 </template>
 
 <script>
 import Vertex from "./Vertex.vue";
-import Edge from "./Edge.vue";
 export default {
   name: "Playground",
   components: {
     Vertex,
-    Edge,
   },
   data() {
     return {
@@ -53,7 +45,6 @@ export default {
       endId: null,
       count: 0,
       vertices: [],
-      edges: [],
       points: [],
     };
   },
@@ -64,21 +55,16 @@ export default {
     end($event) {
       if (this.startId === undefined) return;
       this.endId = this.points[$event.y * this.$window.innerWidth + $event.x];
-      if (this.endId !== undefined) this.connect();
+      if (this.endId !== undefined && this.endId != this.startId) this.connect();
     },
     connect() {
       if (this.vertices[this.startId]["neighbors"][this.endId]) return;
-      this.vertices[this.startId]["neighbors"][this.endId] = true;
-      this.drawLine(this.startId, this.endId);
-    },
-    drawLine(start, end) {
-      this.edges.push({
-        x1: this.vertices[start].x,
-        y1: this.vertices[start].y,
-        x2: this.vertices[end].x,
-        y2: this.vertices[end].y,
-      });
-      return;
+      this.vertices[this.startId]["neighbors"][this.endId] = {
+        x1: this.vertices[this.startId].x,
+        y1: this.vertices[this.startId].y,
+        x2: this.vertices[this.endId].x,
+        y2: this.vertices[this.endId].y,
+      };
     },
     addVertex($event) {
       var [x, y] = this.findCoordinates($event);

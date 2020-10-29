@@ -24,9 +24,7 @@ export default {
         transform:
           "rotate(" +
           this.angle +
-          "deg) scaleY(" +
-          (this.inverted ? -1 : 1) +
-          ")",
+          "deg)",
         width: this.distance + "px",
         height: this.$circle + "px",
       };
