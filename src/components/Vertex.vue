@@ -4,8 +4,8 @@
     :y1="edge.y1"
     :x2="edge.x2"
     :y2="edge.y2"
-    v-for="edge in vertex['neighbors']"
-    :key="edge.id"
+    v-for="(edge, end) in vertex['neighbors']"
+    :key="end"
   ></edge>
   <div class="vertex" :style="style"></div>
 </template>

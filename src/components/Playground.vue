@@ -27,7 +27,6 @@
       :vertex="vertex"
       v-for="vertex in vertices"
       :key="vertex.id"
-      :id="vertex.id"
     ></vertex>
   </div>
 </template>
@@ -65,6 +64,8 @@ export default {
         x2: this.vertices[this.endId].x,
         y2: this.vertices[this.endId].y,
       };
+      console.log(this.startId+" and "+this.endId+" are connected ");
+      console.log("coordinates of x1 "+this.vertices[this.startId].x+" coordinates of x2 "+this.vertices[this.endId].x);
     },
     addVertex($event) {
       var [x, y] = this.findCoordinates($event);
